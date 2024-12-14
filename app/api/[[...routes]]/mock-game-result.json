@@ -1,0 +1,9 @@
+{
+    "player1": "0x123...",
+    "player1Choice": "Rock",
+    "player2": "0x456...",
+    "player2Choice": "Paper",
+    "winner": "0x456...",
+    "reward": 1000
+  }
+  
