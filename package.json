@@ -1,0 +1,29 @@
+{
+  "name": "rps-bet",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "frog-dev": "frog dev",
+    "deploy": "vercel",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "frog": "latest",
+    "hono": "^4",
+    "next": "14.1.0",
+    "react": "^18",
+    "react-dom": "^18"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "hardhat": "^2.22.17",
+    "typescript": "^5",
+    "vercel": "^32.4.1"
+  }
+}
