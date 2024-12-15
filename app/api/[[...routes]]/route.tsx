@@ -22,11 +22,10 @@ const infuraApiKey = env.INFURA_KEY // Get Infura API key from environment varia
 const network = "base-sepolia"; // Or "sepolia", "mainnet", etc.
 
 const BUTTON_LABELS = {
-  1: 'Rock',
-  2: 'Paper',
-  3: 'Scissors',
+  1: 'rock',
+  2: 'paper',
+  3: 'scissors',
 }
-
 
 app.frame('/', (c) => {
    const { frameData , status } = c
@@ -35,34 +34,7 @@ app.frame('/', (c) => {
   
    return c.res({
     action: '/addaddress',
-    image: (
-      <div
-        style={{
-          alignItems: 'center',
-          background: status === 'response' 
-            ? 'linear-gradient(to right, #432889, #17101F)' 
-            : 'black',
-          display: 'flex',
-          flexDirection: 'column',
-          height: '100%',
-          justifyContent: 'center',
-          textAlign: 'center',
-          width: '100%',
-        }}
-      >
-        <div
-          style={{
-            color: 'white',
-            fontSize: 50,
-            marginTop: 30,
-            padding: '0 20px',
-            whiteSpace: 'pre-wrap',
-          }}
-        >
-          {status === 'response' ? `You chose ${buttonValue}. Please wait for an opponent...` : 'Welcome to Rock, Paper, Scissors!'}
-        </div>
-      </div>
-    ),
+    image: ('https://i.ibb.co.com/CM9PC90/Play-the-Game-and-get-rewards.gif'),
     intents: [
       <Button.Transaction target="/bet/rock?choice=Rock">Rock</Button.Transaction>,
       <Button.Transaction target="/bet/paper?choice=Paper">Paper</Button.Transaction>,
@@ -116,34 +88,11 @@ app.frame('/addaddress', (c) => {
   const { frameData , status } = c
   const buttonIndex = frameData?.buttonIndex as 1 | 2 | 3
   const buttonValue = BUTTON_LABELS[buttonIndex] || '...'
+  const theimg = buttonValue !== '...' ? buttonValue == 'rock' ? 'https://i.ibb.co.com/p4XTkbc/rock-anim.gif' : buttonValue == 'paper' ? 'https://i.ibb.co.com/S0B0Jht/paper-anim.gif' : 'https://i.ibb.co.com/JrD6KWw/scissors-anim.gif' : 'https://i.ibb.co.com/yhp24Tz/enter-wallet.jpg';
 
   return c.res({
     action: '/result',
-    image: (
-      <div
-      style={{
-        alignItems: 'center',
-        background: status === 'response' 
-          ? 'linear-gradient(to right, #432889, #17101F)' 
-          : 'black',
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100%',
-        justifyContent: 'center',
-        textAlign: 'center',
-        width: '100%',
-      }}
-    >
-      <div style={{             
-        color: 'white',
-        fontSize: 40,
-        marginTop: 30,
-        padding: '0 20px',
-        whiteSpace: 'pre-wrap', }}>
-          {status === 'response' ? `You chose ${buttonValue}. Like and Recast this Frame to get faster opponent...` : 'Like and Recast this Frame to get faster opponent'}
-       </div>
-      </div>
-    ),
+    image: (theimg),
     intents: [
       <TextInput placeholder="Wallet Adress"/>,
       <Button>Check Result</Button>,
@@ -154,19 +103,33 @@ app.frame('/addaddress', (c) => {
 
 
 app.frame('/result', async (c) => {
-  const { frameData , status, inputText } = c
-  const playerAddress = inputText || ''; // Ensure playerAddress is always a string
+  const { frameData, status, inputText } = c;
+  const playerAddress = inputText || '';
   const gameResult: GameResult = await fetchGameResult(CONTRACT_ADDRESS, playerAddress);
   const { player1, player1Choice, player2, player2Choice, winner, reward, error } = gameResult;
 
-  return c.res({ 
-    image: (
-      <div style={{             
-        color: 'white',
-        fontSize: 30,
-        marginTop: 30,
-        padding: '0 20px',
-        whiteSpace: 'pre-wrap', }}>
+  if (winner == '') {
+    return c.res({
+      action: '/',
+      image: 'https://i.ibb.co.com/D8JJN6y/Play-the-Game-and-get-rewards.jpg',
+      intents: [<Button.Reset>Play Again</Button.Reset>],
+    });
+  }else{
+
+    return c.res({
+      action: '/',
+      image: (
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 8,
+          textAlign: 'center',
+          color: 'white',
+          fontSize: 30,
+          marginTop: 30,
+          padding: '0 20px',
+          whiteSpace: 'pre-wrap',
+    }}>
 
         {status === 'response' ? (
           `Your Last Game Results:\n` +
@@ -175,12 +138,13 @@ app.frame('/result', async (c) => {
           `Winner: ${winner}\n` +
           `Reward: ${reward} ETH`
         ) : 'Waiting for game results...'}
+
     </div>
-    ),  
-    intents: [
-      <Button.Reset>Play Again</Button.Reset>,
-    ],
-   }); 
+      ),
+      intents: [<Button.Reset>Play Again</Button.Reset>],
+    });
+  }
+
 });
 
 
